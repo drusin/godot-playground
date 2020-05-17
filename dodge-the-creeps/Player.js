@@ -1,11 +1,12 @@
 export default class Player extends godot.Area2D {
 	static export() {
 		godot.register_property(Player, 'speed', 400);
+		godot.register_signal(Player, 'hit');
 	}
 	
 	_ready() {
 		this.screenSize = this.get_viewport_rect().size;
-		// this.hide();
+		this.hide();
 	}
 	
 	_process(delta) {
@@ -47,6 +48,17 @@ export default class Player extends godot.Area2D {
 		}
 	}
 	
+	_onPlayerBodyEntered(body) {
+		this.hide();
+		this.emit_signal('hit');
+		this.get_node('CollisionShape2D').set_deferred('disabled', true);		
+	}
+	
+	start(position) {
+		this.position = position;
+		this.show();
+		this.get_node('CollisionShape2D').disabled = false;
+	}
 }
 
 Player.export();
