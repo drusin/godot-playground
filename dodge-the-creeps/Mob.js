@@ -13,6 +13,10 @@ export default class Mob extends godot.RigidBody2D {
 	_onVisibilityScreenExited() {
 		this.queue_free();
 	}
+	
+	_onStartGame() {
+		this.queue_free();
+	}
 }
 
 Mob.register();
