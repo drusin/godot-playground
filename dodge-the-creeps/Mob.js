@@ -1,3 +1,4 @@
+import { registerChildren } from 'res://jsHelper.js';
 const MOB_TYPES = ['walk', 'swim', 'fly'];
 
 export default class Mob extends godot.RigidBody2D {
@@ -7,8 +8,9 @@ export default class Mob extends godot.RigidBody2D {
 	}
 	
 	_ready() {
-		this.get_node('AnimatedSprite').animation = MOB_TYPES[godot.abs(godot.randi() % MOB_TYPES.length)];
-		this.get_node('AnimatedSprite').play();
+		registerChildren(this);
+		this.$.AnimatedSprite.animation = MOB_TYPES[godot.abs(godot.randi() % MOB_TYPES.length)];
+		this.$.AnimatedSprite.play();
 	}
 
 	_onVisibilityScreenExited() {

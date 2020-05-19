@@ -1,3 +1,5 @@
+import { registerChildren } from 'res://jsHelper.js';
+
 export default class Player extends godot.Area2D {
 	static export() {
 		godot.register_property(Player, 'speed', 400);
@@ -5,6 +7,7 @@ export default class Player extends godot.Area2D {
 	}
 	
 	_ready() {
+		registerChildren(this);
 		this.screenSize = this.get_viewport_rect().size;
 		this.hide();
 	}
@@ -23,7 +26,7 @@ export default class Player extends godot.Area2D {
 		if (godot.Input.is_action_pressed('ui_down')) {
 			velocity.y += 1;
 		}
-		const sprite = this.get_node('AnimatedSprite');
+		const sprite = this.$.AnimatedSprite;
 		if (velocity.length() > 0) {
 			velocity = velocity.normalized() * this.speed;
 			sprite.play();
@@ -51,13 +54,13 @@ export default class Player extends godot.Area2D {
 	_onPlayerBodyEntered(body) {
 		this.hide();
 		this.emit_signal('hit');
-		this.get_node('CollisionShape2D').set_deferred('disabled', true);		
+		this.$.CollisionShape2D.set_deferred('disabled', true);		
 	}
 	
 	start(position) {
 		this.position = position;
 		this.show();
-		this.get_node('CollisionShape2D').disabled = false;
+		this.$.CollisionShape2D.disabled = false;
 	}
 }
 

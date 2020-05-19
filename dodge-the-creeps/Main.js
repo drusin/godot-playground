@@ -1,34 +1,28 @@
+import { registerChildren } from 'res://jsHelper.js';
 export default class Main extends godot.Node {
 	static register() {
-		// This crashes the editor
-		// godot.register_property(Main, 'Mob', godot.PackedScene);
-	}
-	
-	constructor() {
-		super();
-		// workaround for the problem mentioned above
-		this.Mob = godot.load('res://Mob.tscn');
+				godot.register_property(Main, 'Mob', new godot.PackedScene());
 	}
 	
 	_ready() {
+		registerChildren(this);
 		godot.randomize();
 	}
 	
 	gameOver() {
-		this.get_node('ScoreTimer').stop();
-		this.get_node('MobTimer').stop();
+		this.$.ScoreTimer.stop();
+		this.$.MobTimer.stop();
 		
-		this.get_node('HUD').showGameOver();
+		this.$.HUD.showGameOver();
 	}
 
 	newGame() {
 		this.score = 0;
-		this.get_node('Player').start(this.get_node('StartPosition').position);
-		this.get_node('StartTimer').start();
+		this.$.Player.start(this.$.StartPosition.position);
+		this.$.StartTimer.start();
 		
-		const hud = this.get_node('HUD');
-		hud.updateScore(this.score);
-		hud.showMessage('Get Ready');
+		this.$.HUD.updateScore(this.score);
+		this.$.HUD.showMessage('Get Ready');
 	}
 
 	_onMobTimerTimeout() {
@@ -43,17 +37,17 @@ export default class Main extends godot.Node {
 		mob.linear_velocity = new godot.Vector2(godot.rand_range(mob.minSpeed, mob.maxSpeed), 0);
 		mob.linear_velocity = mob.linear_velocity.rotated(direction);
 		
-		this.get_node('HUD').connect('startGame', mob, "_onStartGame");
+		this.$.HUD.connect('startGame', mob, "_onStartGame");
 	}
 
 	_onScoreTimerTimeout() {
 		this.score += 1;
-		this.get_node('HUD').updateScore(this.score);
+		this.$.HUD.updateScore(this.score);
 	}
 
 	_onStartTimerTimeout() {
-		this.get_node('MobTimer').start();
-		this.get_node('ScoreTimer').start();
+		this.$.MobTimer.start();
+		this.$.ScoreTimer.start();
 	}
 }
 

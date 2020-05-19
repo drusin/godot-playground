@@ -1,38 +1,42 @@
+import { registerChildren } from 'res://jsHelper.js';
+
 export default class HUD extends godot.CanvasLayer {
 	static export() {
 		godot.register_signal(HUD, 'startGame');
 	}
 
-	showMessage(text) {
-		const messageLabel = this.get_node('MessageLabel');
-		messageLabel.text = text;
-		messageLabel.show();
-		this.get_node('MessageTimer').start();
+	_ready() {
+		registerChildren(this);
 	}
 
-	showGameOver() {
+	showMessage(text) {
+		this.$.MessageLabel.text = text;
+		this.$.MessageLabel.show();
+		this.$.MessageTimer.start();
+	}
+
+	async showGameOver() {
 		this.showMessage('Game Over');
-		godot.yield(this.get_node('MessageTimer'), 'timeout');
+		await godot.yield(this.$.MessageTimer, 'timeout');
 
-		const messageLabel = this.get_node('MessageLabel');
-		messageLabel.text = 'Dodge the Creeps!';
-		messageLabel.show();
+		this.$.MessageLabel.text = 'Dodge the Creeps!';
+		this.$.MessageLabel.show();
 
-		godot.yield(this.get_tree().create_timer(1), 'timeout');
+		await godot.yield(this.get_tree().create_timer(1), 'timeout');
 
-		this.get_node('StartButton').show();
+		this.$.StartButton.show();
 	}
 	
 	updateScore(score) {
-		this.get_node('ScoreLabel').text = score.toString();
+		this.$.ScoreLabel.text = score.toString();
 	}
 
 	_onMessageTimerTimeout() {
-		this.get_node('MessageLabel').hide();
+		this.$.MessageLabel.hide();
 	}
 
 	_onStartButtonPressed() {
-		this.get_node('StartButton').hide();
+		this.$.StartButton.hide();
 		this.emit_signal('startGame');
 	}
 }
