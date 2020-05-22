@@ -1,10 +1,6 @@
 import { registerChildren } from 'res://jsHelper.js';
 
 export default class Player extends godot.KinematicBody2D {
-	static export() {
-
-	}
-
 	_ready() {
 		registerChildren(this);
 		this.score = 0;
@@ -12,7 +8,6 @@ export default class Player extends godot.KinematicBody2D {
 		this.jumpForce = 600;
 		this.gravitiy = 800;
 		this.vel = new godot.Vector2();
-		this.sprite = this.$.Sprite;
 		this.ui = this.get_node('/root/MainScene/CanvasLayer/UI');
 	}
 	
@@ -33,10 +28,10 @@ export default class Player extends godot.KinematicBody2D {
 		}
 
 		if (this.vel.x < 0) {
-			this.sprite.flip_h = true;
+			this.$.Sprite.flip_h = true;
 		}
 		else if (this.vel.x > 0) {
-			this.sprite.flip_h = false;
+			this.$.Sprite.flip_h = false;
 		}
 	}
 	
@@ -49,5 +44,3 @@ export default class Player extends godot.KinematicBody2D {
 		this.ui.setScoreText(this.score);
 	}
 }
-
-Player.export();

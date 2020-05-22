@@ -1,9 +1,9 @@
-import { registerChildren } from 'res://jsHelper.js';
+import { registerChildren, doExports } from 'res://jsHelper.js';
 
 export default class Player extends godot.Area2D {
-	static export() {
-		godot.register_property(Player, 'speed', 400);
-		godot.register_signal(Player, 'hit');
+	static export(vars, signal) {
+		vars({ speed: 400 });
+		signal('hit');
 	}
 	
 	_ready() {
@@ -64,4 +64,4 @@ export default class Player extends godot.Area2D {
 	}
 }
 
-Player.export();
+doExports(Player);

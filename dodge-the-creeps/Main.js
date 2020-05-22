@@ -1,7 +1,8 @@
-import { registerChildren } from 'res://jsHelper.js';
+import { registerChildren, doExports } from 'res://jsHelper.js';
+
 export default class Main extends godot.Node {
-	static register() {
-				godot.register_property(Main, 'Mob', new godot.PackedScene());
+	static export(vars) {
+		vars({ Mob: new godot.PackedScene() });
 	}
 	
 	_ready() {
@@ -51,4 +52,4 @@ export default class Main extends godot.Node {
 	}
 }
 
-Main.register();
+doExports(Main);

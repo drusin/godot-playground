@@ -1,10 +1,12 @@
-import { registerChildren } from 'res://jsHelper.js';
+import { registerChildren, doExports } from 'res://jsHelper.js';
 const MOB_TYPES = ['walk', 'swim', 'fly'];
 
 export default class Mob extends godot.RigidBody2D {
-	static register() {
-		godot.register_property(Mob, 'minSpeed', 150);
-		godot.register_property(Mob, 'maxSpeed', 250);
+	static export(vars) {
+		vars({
+			minSpeed: 150,
+			maxSpeed: 250
+		});
 	}
 	
 	_ready() {
@@ -22,4 +24,4 @@ export default class Mob extends godot.RigidBody2D {
 	}
 }
 
-Mob.register();
+doExports(Mob);

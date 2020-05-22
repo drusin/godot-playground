@@ -1,14 +1,14 @@
-import { registerChildren } from 'res://jsHelper.js';
+import { doExports } from 'res://jsHelper.js';
 
 export default class Enemy extends godot.Area2D {
-	static export() {
-		godot.register_property(Enemy, 'speed', 100);
-		godot.register_property(Enemy, 'moveDist', 100);
+	static export(vars) {
+		vars({
+			speed: 100,
+			moveDist: 100
+		});
 	}
 
 	_ready() {
-		registerChildren(this);
-
 		this.startX = this.position.x;
 		this.targetX = this.position.x + this.moveDist;
 	}
@@ -47,4 +47,4 @@ export default class Enemy extends godot.Area2D {
 	}
 }
 
-Enemy.export();
+doExports(Enemy);

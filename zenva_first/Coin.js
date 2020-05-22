@@ -1,6 +1,8 @@
+import { doExports } from 'res://jsHelper.js';
+
 export default class Coin extends godot.Area2D {
-	static export() {
-		godot.register_property(Coin, 'value', 1);
+	static export(vars) {
+		vars({ value: 1 });
 	}
 
 	_ready() {
@@ -19,4 +21,4 @@ export default class Coin extends godot.Area2D {
 	}
 }
 
-Coin.export();
+doExports(Coin);

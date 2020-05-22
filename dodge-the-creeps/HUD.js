@@ -1,8 +1,8 @@
-import { registerChildren } from 'res://jsHelper.js';
+import { registerChildren, doExports } from 'res://jsHelper.js';
 
 export default class HUD extends godot.CanvasLayer {
-	static export() {
-		godot.register_signal(HUD, 'startGame');
+	static export(vars, signal) {
+		signal('startGame');
 	}
 
 	_ready() {
@@ -41,4 +41,4 @@ export default class HUD extends godot.CanvasLayer {
 	}
 }
 
-HUD.export();
+doExports(HUD);

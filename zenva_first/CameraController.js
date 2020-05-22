@@ -1,6 +1,4 @@
 export default class CameraController extends godot.Camera2D {
-	static export() {}
-
 	_ready() {
 		this.player = this.get_node('/root/MainScene/Player');
 	}
@@ -9,5 +7,3 @@ export default class CameraController extends godot.Camera2D {
 		this.position = new godot.Vector2(this.player.position.x, this.position.y);
 	}
 }
-
-CameraController.export();
