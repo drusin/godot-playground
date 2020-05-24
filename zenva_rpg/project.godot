@@ -19,6 +19,10 @@ config/name="zenva rpg"
 run/main_scene="res://MainScene.tscn"
 config/icon="res://icon.png"
 
+[editor_plugins]
+
+enabled=PoolStringArray(  )
+
 [input]
 
 move_up={
