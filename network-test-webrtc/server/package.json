@@ -1,17 +1,14 @@
 {
-  "name": "signaling_server",
-  "version": "1.0.0",
+  "name": "webrtc_signaling_server",
+  "version": "0.0.1",
   "description": "",
   "main": "server.js",
   "dependencies": {
     "ws": "^7.0.0"
   },
-  "devDependencies": {
-    "eslint": "^5.16.0"
+  "engines": {
+    "node": "10.15.x"
   },
-  "scripts": {
-    "test": "eslint server.js && echo \"Lint OK\" && exit 0"
-  },
-  "author": "Fabio Alessandrelli",
+  "author": "Dawid Rusin",
   "license": "MIT"
 }
