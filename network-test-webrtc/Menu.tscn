@@ -13,4 +13,23 @@ __meta__ = {
 [node name="Timer" type="Timer" parent="."]
 wait_time = 10.0
 autostart = true
+
+[node name="Server" type="Button" parent="."]
+margin_left = 310.0
+margin_top = 137.0
+margin_right = 362.0
+margin_bottom = 157.0
+text = "Server"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Client" type="Button" parent="."]
+margin_left = 579.0
+margin_top = 135.0
+margin_right = 628.0
+margin_bottom = 155.0
+text = "Client"
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="pressed" from="Server" to="." method="_on_Server_pressed"]
+[connection signal="pressed" from="Client" to="." method="_on_Client_pressed"]

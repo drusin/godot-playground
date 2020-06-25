@@ -1,7 +1,5 @@
 extends Control
 
-# const SERVER_ADDRESS = "ws://localhost:9081"
-const SERVER_ADDRESS = "wss://guarded-oasis-16598.herokuapp.com"
 const PEER_CONFIG = { "iceServers": [ { "urls": ["stun:stun.l.google.com:19302"] } ] }
 const LEVEL = "res://Level.tscn"
 
@@ -23,11 +21,8 @@ func _ready():
 	WebSocketClientWrapper.connect("candiate_recieved", self, "_on_candiate_recieved")
 	
 	rtc_multiplayer.connect("peer_connected", self, "_on_rtc_peer_connected")
-	rtc_multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
-	
-	WebSocketClientWrapper.connect_to(SERVER_ADDRESS)
-	
-	
+
+
 func _process(_delta):
 	rtc_multiplayer.poll()
 
@@ -86,12 +81,16 @@ func _on_rtc_peer_connected(id):
 # warning-ignore:return_value_discarded
 	get_tree().change_scene(LEVEL)
 	queue_free()
-	
-	
-func _on_connection_succeeded():
-	print("connection_succeeded")
 
 
 func _on_Timer_timeout():
 	print(rtc_multiplayer.get_peers())
 	print(get_tree().is_network_server())
+
+
+func _on_Server_pressed():
+	WebSocketClientWrapper.create_server()
+
+
+func _on_Client_pressed():
+	WebSocketClientWrapper.join_server()

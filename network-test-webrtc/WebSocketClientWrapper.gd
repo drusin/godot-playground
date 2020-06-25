@@ -7,13 +7,18 @@ signal offer_recieved(id, offer)
 signal answer_recieved(id, answer)
 signal candiate_recieved(id, mid_name, index_name, sdp_name)
 
+# const SERVER_ADDRESS = "wss://guarded-oasis-16598.herokuapp.com"
+const SERVER_ADDRESS = "ws://localhost:9081"
+
 const MESSAGES = {
-	"ID": "ID",
-	"PEER": "PEER",
-	"SERVER": "SERVER",
-	"OFFER": "OFFER",
-	"ANSWER": "ANSWER",
-	"CANDIDATE": "CANDIDATE",
+	ID = "ID",
+	PEER = "PEER",
+	START_SERVER = "START_SERVER",
+	JOIN_SERVER = "JOIN_SERVER",
+	SERVER_ID = "SERVER_ID",
+	OFFER = "OFFER",
+	ANSWER = "ANSWER",
+	CANDIDATE = "CANDIDATE",
 }
 
 var client = WebSocketClient.new()
@@ -22,6 +27,7 @@ var client = WebSocketClient.new()
 func _ready():
 	client.connect("connection_established", self, "_on_connection_established")
 	client.connect("data_received", self, "_on_data_received")
+	client.connect_to_url(SERVER_ADDRESS)
 
 
 func _process(_delta):
@@ -30,8 +36,12 @@ func _process(_delta):
 		client.poll()
 
 
-func connect_to(url):
-	client.connect_to_url(url)
+func create_server():
+	_send_message(MESSAGES.START_SERVER)
+
+
+func join_server():
+	_send_message(MESSAGES.JOIN_SERVER)
 
 
 func send_offer(id, sdp):
@@ -46,11 +56,11 @@ func send_candidate(id, mid_name, index_name, sdp_name):
 	_send_message(MESSAGES.CANDIDATE, id, [mid_name, index_name, sdp_name])
 
 
-func _send_message(header, id, payload: Array = []):
+func _send_message(header, id: = -1, payload: = []):
 	client.get_peer(1).put_packet(_create_msg(header, id, payload).to_utf8())
 
 
-static func _create_msg(type, id, payload: Array = []):
+static func _create_msg(type, id: = -1, payload: = []):
 	return JSON.print({
 		"type": type,
 		"id": id,
@@ -75,7 +85,7 @@ func _parse_message(message):
 			emit_signal("connected", message.id)
 		MESSAGES.PEER:
 			emit_signal("peer_connected", message.id)
-		MESSAGES.SERVER:
+		MESSAGES.SERVER_ID:
 			emit_signal("server_id_recieved", message.id)
 		MESSAGES.OFFER:
 			emit_signal("offer_recieved", message.id, message.payload[0])
