@@ -23,10 +23,6 @@ config/icon="res://icon.png"
 
 WebSocketClientWrapper="*res://WebSocketClientWrapper.gd"
 
-[display]
-
-window/size/always_on_top=true
-
 [editor_plugins]
 
 enabled=PoolStringArray( "open-external-editor" )

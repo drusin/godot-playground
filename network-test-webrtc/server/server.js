@@ -7,11 +7,12 @@ const PORT = 9081;
 const server = new WebSocket.Server({ port: PORT });
 
 const MESSAGES = {
-	ID: 'ID:',
-	PEER: 'PEER:',
-	SERVER: 'SERVER:',
-	OFFER: 'OFFER:',
-	ANSWER: 'ANSWER:',
+	ID: 'ID',
+	PEER: 'PEER',
+	SERVER: 'SERVER',
+	OFFER: 'OFFER',
+	ANSWER: 'ANSWER',
+	CANDIDATE: 'CANDIDATE',
 };
 
 class Message {
@@ -41,10 +42,10 @@ function randomId () {
 
 const peers = new Map();
 const peersReversed = new Map();
-var serverId = null;
+const serverId = 1;
 
 server.on('connection', (webSocket) => {
-	const id = randomId();
+	const id = peers.size > 0 ? randomId() : serverId;
 	peers.set(webSocket, id);
 	peersReversed.set(id, webSocket);
 
@@ -55,17 +56,16 @@ server.on('connection', (webSocket) => {
 	console.log(`A new client connected!: ${id}`);
 
 	webSocket.on('message', data => {
-		console.log(data);
 		const message = new Message(data);
 		console.log(message);
 		switch (message.type) {
 			case MESSAGES.OFFER:
 				//fall through
 			case MESSAGES.ANSWER:
+				//fall through
+			case MESSAGES.CANDIDATE:
 				const recieverId = message.id;
 				message.id = id;
-				console.log(recieverId);
-				console.log(message.id);
 				peersReversed.get(recieverId).send(message.toString());
 				break;
 		}
@@ -87,9 +87,6 @@ server.on('connection', (webSocket) => {
 		console.log(`Client disconnected!: ${id}`);
 		peers.delete(webSocket);
 		peersReversed.delete(id);
-		if (serverId === id) {
-			serverId = null;
-		}
 	})
 });
 

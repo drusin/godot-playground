@@ -5,13 +5,15 @@ signal peer_connected(id)
 signal server_id_recieved(id)
 signal offer_recieved(id, offer)
 signal answer_recieved(id, answer)
+signal candiate_recieved(id, mid_name, index_name, sdp_name)
 
 const MESSAGES = {
-	'ID': 'ID:',
-	'PEER': 'PEER:',
-	'SERVER': 'SERVER:',
-	'OFFER': 'OFFER:',
-	'ANSWER': 'ANSWER:'
+	'ID': 'ID',
+	'PEER': 'PEER',
+	'SERVER': 'SERVER',
+	'OFFER': 'OFFER',
+	'ANSWER': 'ANSWER',
+	'CANDIDATE': 'CANDIDATE',
 }
 
 var client = WebSocketClient.new()
@@ -35,26 +37,32 @@ func _connected(_protocol):
 	
 	
 func _parse_message():
-	var message_raw = client.get_peer(1).get_packet().get_string_from_utf8()
-	var message = message_raw.split('\n')
-	print(message)
-	match message[0]:
+	var message = Message.new(client.get_peer(1).get_packet().get_string_from_utf8())
+	match message.type:
 		MESSAGES.ID:
-			emit_signal("connected", int(message[1]))
+			emit_signal("connected", message.id)
 		MESSAGES.PEER:
-			emit_signal("peer_connected", int(message[1]))
+			emit_signal("peer_connected", message.id)
 		MESSAGES.SERVER:
-			emit_signal("server_id_recieved", int(message[1]))
+			emit_signal("server_id_recieved", message.id)
 		MESSAGES.OFFER:
-			var payload = PoolStringArray(message.slice(2, message.size())).join('\n')
-			emit_signal("offer_recieved", int(message[1]), payload)
-		MESSAGES.OFFER:
-			print("Answe recieved!")
-			print(message_raw)
+			emit_signal("offer_recieved", message.id, message.payload)
+		MESSAGES.ANSWER:
+			emit_signal("answer_recieved", message.id, message.payload)
+		MESSAGES.CANDIDATE:
+			var split_payload = message.payload.split("\n")
+			emit_signal("candiate_recieved", message.id, split_payload[0], int(split_payload[1]), split_payload[2])
+		_:
+			print("Something else")
+			print(message)
 	
 	
 func send_message(id, header, data):
-	client.get_peer(1).put_packet(("%s\n%d\n%s" % [header, id, data]).to_utf8())
+	send_message_raw("%s\n%d\n%s" % [header, id, data])
+	
+	
+func send_message_raw(string):
+	client.get_peer(1).put_packet(string.to_utf8())
 
 
 func send_offer(id, sdp):
@@ -63,3 +71,25 @@ func send_offer(id, sdp):
 
 func send_answer(id, sdp):
 	send_message(id, MESSAGES.ANSWER, sdp)
+	
+	
+func send_candidate(id, mid_name, index_name, sdp_name):
+	send_message_raw(stringify([MESSAGES.CANDIDATE, id, mid_name, index_name, sdp_name]))
+	
+	
+static func stringify(args: Array):
+	return PoolStringArray(args).join('\n')
+	
+	
+class Message:
+	var type = ''
+	var id: int = -1
+	var payload = null
+	
+	func _init(message):
+		var split = message.split('\n')
+		type = split[0]
+		id = int(split[1])
+		split.remove(0)
+		split.remove(0)
+		payload = split.join('\n')
