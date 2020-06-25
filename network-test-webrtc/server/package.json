@@ -6,6 +6,9 @@
   "dependencies": {
     "ws": "^7.0.0"
   },
+  "scripts": {
+    "start": "node server.js"
+  },
   "engines": {
     "node": "10.15.x"
   },
