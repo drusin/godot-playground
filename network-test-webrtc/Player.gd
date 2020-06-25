@@ -11,6 +11,7 @@ onready var tween = $Tween
 
 
 func _physics_process(delta):
+# warning-ignore:return_value_discarded
 	move_and_slide(controller.movement * SPEED)
 	
 	if is_network_master():

@@ -1,30 +1,30 @@
 extends Control
 
-const DEFAULT_PORT = 8910
-const IP = "127.0.0.1"
+const SERVER_ADDRESS = "ws://localhost:9081"
 const PEER_CONFIG = { "iceServers": [ { "urls": ["stun:stun.l.google.com:19302"] } ] }
+const LEVEL = "res://Level.tscn"
 
 var rtc_multiplayer = WebRTCMultiplayer.new()
 
-var level = "res://Level.tscn"
-
 
 func _ready():
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	WebSocketClientWrapper.connect("connected", self, "_on_connected")
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	WebSocketClientWrapper.connect("peer_connected", self, "_on_peer_connected")
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	WebSocketClientWrapper.connect("server_id_recieved", self, "_on_server_id_recieved")
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	WebSocketClientWrapper.connect("offer_recieved", self, "_on_offer_recieved")
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	WebSocketClientWrapper.connect("answer_recieved", self, "_on_answer_recieved")
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	WebSocketClientWrapper.connect("candiate_recieved", self, "_on_candiate_recieved")
 	
 	rtc_multiplayer.connect("peer_connected", self, "_on_rtc_peer_connected")
 	rtc_multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
+	
+	WebSocketClientWrapper.connect_to(SERVER_ADDRESS)
 	
 	
 func _process(_delta):
@@ -41,11 +41,11 @@ func _on_peer_connected(id):
 	if id == rtc_multiplayer.get_unique_id():
 		return
 	var peer : WebRTCPeerConnection = WebRTCPeerConnection.new()
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	peer.initialize(PEER_CONFIG)
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	peer.connect("session_description_created", self, "_on_session_description_created", [id])
-	# warning-ignore:return_value_discarded
+# warning-ignore:return_value_discarded
 	peer.connect("ice_candidate_created", self, "_on_ice_candidate_created", [id])
 	rtc_multiplayer.add_peer(peer, id)
 	print('Peer added: ' + str(id))
@@ -82,7 +82,8 @@ func _on_ice_candidate_created(mid_name, index_name, sdp_name, id):
 	
 func _on_rtc_peer_connected(id):
 	print("peer connected: ", id)
-	get_tree().change_scene(level)
+# warning-ignore:return_value_discarded
+	get_tree().change_scene(LEVEL)
 	queue_free()
 	
 	
