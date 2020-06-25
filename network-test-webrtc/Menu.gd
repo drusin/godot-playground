@@ -1,6 +1,7 @@
 extends Control
 
-const SERVER_ADDRESS = "ws://localhost:9081"
+# const SERVER_ADDRESS = "ws://localhost:9081"
+const SERVER_ADDRESS = "ws://guarded-oasis-16598.herokuapp.com"
 const PEER_CONFIG = { "iceServers": [ { "urls": ["stun:stun.l.google.com:19302"] } ] }
 const LEVEL = "res://Level.tscn"
 
