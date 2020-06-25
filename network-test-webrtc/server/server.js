@@ -2,7 +2,7 @@ const WebSocket = require("ws");
 const crypto = require("crypto");
 
 const PING_INTERVAL = 10000;
-const PORT = 9081;
+const PORT = process.env.PORT || 9081;
 
 const SERVER_ID = 1;
 
